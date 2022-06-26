@@ -19,6 +19,13 @@ import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import {AppRoutingModule} from "./app-routing/app-routing.module";
 import {PromotionService} from "./services/promotion.service";
+import {LeaderService} from "./services/leader.service";
+import { LoginComponent } from './login/login.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatInputModule} from "@angular/material/input";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -29,7 +36,8 @@ import {PromotionService} from "./services/promotion.service";
     FooterComponent,
     HomeComponent,
     AboutComponent,
-    ContactComponent
+    ContactComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -40,10 +48,21 @@ import {PromotionService} from "./services/promotion.service";
     MatGridListModule,
     MatCardModule,
     MatButtonModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    MatInputModule,
+    FormsModule
   ],
-  providers: [DishService,
-    PromotionService],
+  entryComponents: [
+    LoginComponent
+  ],
+  providers: [
+    DishService,
+    PromotionService,
+    LeaderService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
