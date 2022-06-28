@@ -28,6 +28,7 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatProgressSpinnerModule
   ],
   entryComponents: [
     LoginComponent
