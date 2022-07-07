@@ -1,7 +1,7 @@
 <div class="container"
       fxLayout="row"
       fxLayoutGap="40"
-     *ngIf="dish">
+     >
   <div fxFlex="40" >
     <mat-card >
       <mat-card-header>
@@ -27,7 +27,7 @@
     </mat-card>
   </div>
 
-  <div fxFlex="40" fxLayout="column">
+  <div fxFlex="40" fxLayout="column" *ngIf="dish">
     <h1>Comments</h1>
     <mat-list>
       <mat-list-item  *ngFor="let com of dish.comments">
@@ -35,7 +35,7 @@
         <p matLine>{{com.rating}} Stars</p>
         <p matLine>--{{com.author}} {{com.date }}</p>
       </mat-list-item>
-      <mat-list-item *ngIf="!formErrors.comment && !formErrors.author">
+      <mat-list-item *ngIf="commentForm.valid">
         <p matLine>{{commentForm.value.comment}}</p>
         <p matLine>{{commentForm.value.rating}} Stars</p>
         <p matLine>-- {{commentForm.value.author}}</p>
@@ -62,7 +62,11 @@
       </form>
   </div>
 </div>
-<div fxFlex  [hidden]="dish">
+<div fxFlex  [hidden]="dish || errMsg">
   <mat-spinner></mat-spinner><h4>Loading... Please wait</h4>
+</div>
+<div fxFlex *ngIf="errMsg">
+  <h2>Error</h2>
+  <h4>{{errMsg}}</h4>
 </div>
 
