@@ -1,10 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {DISHES} from "../shared/dishes";
 import {Dish} from "../shared/dish";
 import {ActivatedRoute, Params} from "@angular/router";
 import {DishService} from "../services/dish.service";
 import {Location} from "@angular/common";
 import {switchMap} from "rxjs";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Comment} from "../shared/comment";
 
 @Component({
   selector: 'app-dish-detail',
@@ -19,9 +21,61 @@ export class DishDetailComponent implements OnInit {
   dishIds : String[];
   next : string;
   prev : string;
+  comment : Comment;
+  rating : number;
+
+
+  commentForm : FormGroup;
+
+  formErrors = {
+    'author': '',
+    'rating' : '',
+    'comment' : ''
+  };
+
+  validationMessages = {
+    'author' : {
+      'required' : 'The name is required.',
+      'minlength' : 'The name must be at least 2 characters long.'
+    },
+
+    'comment' : {
+      'required' : 'The comment is required.'
+    }
+  };
+
   constructor(private activatedRoute : ActivatedRoute,
               private dishService : DishService,
-              private location : Location) {
+              private location : Location,
+              private fb : FormBuilder,
+              @Inject('BaseURL') public baseURL) {
+
+    this.createForm();
+  }
+
+  createForm(){
+    this.commentForm = this.fb.group({
+      author : ['',[Validators.required,Validators.minLength(2),Validators.maxLength(25)]],
+      rating:[''],
+      comment : ['',[Validators.required,Validators.minLength(2),Validators.maxLength(100)]]
+    });
+    this.commentForm.valueChanges.subscribe((data)=>this.onValueChanged(data))
+    this.onValueChanged();
+  }
+
+  onValueChanged(data?:any){
+    if(!this.commentForm) return;
+    const form = this.commentForm;
+    for(const field in this.formErrors){
+      this.formErrors[field] = '';
+      const control = form.get(field);
+      if(control && control.dirty && !control.valid){
+        const messages = this.validationMessages[field];
+        for(const key in control.errors){
+          this.formErrors[field] += messages[key];
+        }
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -43,6 +97,27 @@ export class DishDetailComponent implements OnInit {
   }
   goBack(){
     this.location.back();
+  }
+
+  formatLabel(value : number){
+    this.rating = value;
+    return value;
+  }
+
+  onSubmit(){
+    this.rating = 0;
+    if(this.commentForm.get('rating')?.value)
+      this.rating = this.commentForm.get('rating')?.value;
+    this.comment = {
+      'rating' : this.rating,
+      'comment' : this.commentForm.get('comment')?.value,
+      'author' : this.commentForm.get('author')?.value,
+      'date' : new Date().toString()
+    };
+    console.log(this.comment);
+    this.dish.comments.push(this.comment);
+    //window.location.reload();
+
   }
 
 }

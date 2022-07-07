@@ -1,0 +1,15 @@
+.container{
+  margin: 20px;
+  display: flex;
+}
+.full-width {
+  width: 95%
+}
+
+.form-size {
+  width: 75%
+}
+
+.primary{
+  background-color: #4527A0;
+}
