@@ -16,7 +16,7 @@ import {Comment} from "../shared/comment";
 export class DishDetailComponent implements OnInit {
 
 
-  dish : Dish;
+  dish : Dish |any;
   id : string;
   errMsg : string;
   dishIds : String[];
@@ -25,6 +25,7 @@ export class DishDetailComponent implements OnInit {
   comment : Comment;
   rating : number;
 
+  dishCopy : Dish | any;
 
   commentForm : FormGroup;
 
@@ -86,7 +87,7 @@ export class DishDetailComponent implements OnInit {
     this.dishService.getDishIds()
       .subscribe((dishIds)=>this.dishIds = dishIds);
     this.activatedRoute.params.pipe(switchMap((params : Params)=>this.dishService.getDish(params['id'])))
-      .subscribe((dish)=>{this.dish = dish; this.setPrevNext(dish.id)},
+      .subscribe((dish)=>{this.dish = dish; this.dishCopy = dish; this.setPrevNext(dish.id)},
         (errMss) => this.errMsg = <any>errMss);
 
   }
@@ -107,18 +108,24 @@ export class DishDetailComponent implements OnInit {
   }
 
   onSubmit(){
-    this.rating = 0;
-    if(this.commentForm.get('rating')?.value)
-      this.rating = this.commentForm.get('rating')?.value;
-    this.comment = {
-      'rating' : this.rating,
-      'comment' : this.commentForm.get('comment')?.value,
-      'author' : this.commentForm.get('author')?.value,
-      'date' : new Date().toString()
-    };
+    this.comment = this.commentForm.value;
+    this.comment.date = new Date().toISOString();
     console.log(this.comment);
-    this.dish.comments.push(this.comment);
-    //window.location.reload();
+    this.dishCopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishCopy)
+      .subscribe((dish)=>{
+        this.dish = dish;
+       this.dishCopy = dish},
+      (err)=>{
+        this.dish = null;
+        this.dishCopy = null;
+        this.errMsg = err;
+    });
+    this.commentForm.reset({
+      author:'',
+      rating :5,
+      comment:''
+    });
 
   }
 
