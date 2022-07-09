@@ -1,5 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
-import {DISHES} from "../shared/dishes";
+import {Component, Inject, OnInit} from '@angular/core';
 import {Dish} from "../shared/dish";
 import {ActivatedRoute, Params} from "@angular/router";
 import {DishService} from "../services/dish.service";
@@ -7,24 +6,20 @@ import {Location} from "@angular/common";
 import {switchMap} from "rxjs";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Comment} from "../shared/comment";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {expand, flyInOut, visibility} from "../animations/app.animation";
 
 @Component({
   selector: 'app-dish-detail',
   templateUrl: './dish-detail.component.html',
   styleUrls: ['./dish-detail.component.css'],
+  host : {
+    '[@flyInOut]' : 'true',
+    'style' : 'display : block'
+  },
   animations : [
-    trigger('visibility',[
-      state('shown',style({
-        transform : 'scale(1.0)',
-        opacity : 1
-      })),
-      state('hidden',style({
-        transform : 'scale(0.5)',
-        opacity : 0
-      })),
-      transition('* => *',animate('0.2s ease-in-out'))
-    ])
+    visibility(),
+    flyInOut(),
+    expand()
   ]
 })
 export class DishDetailComponent implements OnInit {
